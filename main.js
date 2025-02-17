@@ -13,7 +13,7 @@ const tabAttack = [{
 },
 {
     attaque: 'Soin léger',
-    puissance: -15,
+    puissance: 15,
 
 },
 {
@@ -60,21 +60,31 @@ while (pvGuerrierDuFeu > 0 && pvSombreLutin > 0) {
                         res.precision = randomize(1, 4);
                         break;
                 }
-                
-                console.log(res.precision);
 
                 if (res.precision === 1) {
                     console.log(`${fighters[i].nom} tente ${res.attaque} mais cela échoue`);
+                    
+                } else if (res.attaque === "Soin léger") {
+                    if (pvSombreLutin >= 50) {
+                        console.log(`${fighters[i].nom} lance ${res.attaque} mais ses points de vie son déjà au maximum !`);
+
+                    } else {
+                        pvSombreLutin += res.puissance
+                        console.log(`${fighters[i].nom} lance ${res.attaque} et se soigne de ${res.puissance} pv`);
+                        console.log(`Ses pv remontent à ${pvSombreLutin}`);
+                        
+                    }
+
                 } else {
                     pvGuerrierDuFeu -= res.puissance
                     console.log(`${fighters[i].nom} lance ${res.attaque} et inflige ${res.puissance} de dégâts`);
+
                 }
-                console.log(`Il ne reste plus que ${pvGuerrierDuFeu} au Guerrier du feu `);
+                console.log(`Il reste ${pvGuerrierDuFeu} pv au Guerrier du Feu `);
 
             } else { /// erreur
                 console.log('Recommence en choisissant entre 1 et 4')
                 choice = Number(prompt());
-
             }
 
         } else { /// attaque automatique
@@ -88,7 +98,7 @@ while (pvGuerrierDuFeu > 0 && pvSombreLutin > 0) {
                 pvSombreLutin -= resDeux.puissance
                 console.log(`${fighters[i].nom} inflige ${resDeux.puissance} avec ${resDeux.attaque}`);
             }
-            console.log(`Il ne reste plus que ${pvSombreLutin} au Sombre Lutin `);
+            console.log(`Il reste ${pvSombreLutin} pv au Sombre Lutin `);
         }
     }
 
