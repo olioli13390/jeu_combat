@@ -27,12 +27,15 @@ const tabAttack = [{
 
 }]
 
+const maxPv = 50
+
+let pvSombreLutin = 50
+let pvGuerrierDuFeu = 50
+
 function randomize(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-let pvSombreLutin = 50
-let pvGuerrierDuFeu = 50
 while (pvGuerrierDuFeu > 0 && pvSombreLutin > 0) {
 
     for (let i = 0; i < fighters.length; i++) {
@@ -41,9 +44,11 @@ while (pvGuerrierDuFeu > 0 && pvSombreLutin > 0) {
             for (let j = 0; j < tabAttack.length; j++) {
                 console.log(`${j + 1} : ${tabAttack[j].attaque}`);
             }
-
             let choice = Number(prompt())
-
+            while (choice != 1 && choice != 2 && choice != 3 && choice != 4) {
+                console.log('Recommence en choisissant entre 1 et 4')
+                choice = Number(prompt());
+            }
             if (choice > 0 && choice <= tabAttack.length) {
                 let res = tabAttack[choice - 1]
                 switch (res.attaque) {
@@ -60,32 +65,30 @@ while (pvGuerrierDuFeu > 0 && pvSombreLutin > 0) {
                         res.precision = randomize(1, 4);
                         break;
                 }
-
                 if (res.precision === 1) {
                     console.log(`${fighters[i].nom} tente ${res.attaque} mais cela échoue`);
-                    
                 } else if (res.attaque === "Soin léger") {
                     if (pvSombreLutin >= 50) {
                         console.log(`${fighters[i].nom} lance ${res.attaque} mais ses points de vie son déjà au maximum !`);
-
                     } else {
                         pvSombreLutin += res.puissance
+                        if(pvSombreLutin > maxPv){
+                            pvSombreLutin = maxPv
+                        }
                         console.log(`${fighters[i].nom} lance ${res.attaque} et se soigne de ${res.puissance} pv`);
                         console.log(`Ses pv remontent à ${pvSombreLutin}`);
-                        
                     }
-
                 } else {
                     pvGuerrierDuFeu -= res.puissance
                     console.log(`${fighters[i].nom} lance ${res.attaque} et inflige ${res.puissance} de dégâts`);
-
                 }
                 console.log(`Il reste ${pvGuerrierDuFeu} pv au Guerrier du Feu `);
 
-            } else { /// erreur
-                console.log('Recommence en choisissant entre 1 et 4')
-                choice = Number(prompt());
             }
+
+
+
+
 
         } else { /// attaque automatique
 
@@ -94,6 +97,18 @@ while (pvGuerrierDuFeu > 0 && pvSombreLutin > 0) {
 
             if (resDeux.precision === 1) {
                 console.log(`${fighters[i].nom} lance ${resDeux.attaque} mais cela échoue !`);
+
+            } else if (resDeux.attaque === 'Soin léger') {
+                if (pvGuerrierDuFeu >= 50) {
+                    console.log(`${fighters[i].nom} lance ${resDeux.attaque} mais ses pv sont déjà au maximum !`);
+                } else {
+                    pvGuerrierDuFeu += resDeux.puissance
+                    if (pvGuerrierDuFeu > maxPv) {
+                        pvGuerrierDuFeu = maxPv    
+                    }
+                    console.log(`${fighters[i].nom} lance ${resDeux.attaque} ! Ses pv remontent à ${pvGuerrierDuFeu}`);
+                }
+
             } else {
                 pvSombreLutin -= resDeux.puissance
                 console.log(`${fighters[i].nom} inflige ${resDeux.puissance} avec ${resDeux.attaque}`);
